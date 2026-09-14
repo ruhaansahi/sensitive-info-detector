@@ -17,9 +17,13 @@ class Match:
 
 PATTERNS = {
     "EMAIL": re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'),
-    "PHONE": re.compile(r'\b(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b'),
+    "PHONE": re.compile(
+        r'\b(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}(?:\s?x\d+)?(?!\d)'
+    ),
     "SSN": re.compile(r'\b\d{3}-\d{2}-\d{4}\b'),
-    "CREDIT_CARD": re.compile(r'\b(?:\d{4}[-\s]?){3}\d{4}\b'),
+    "CREDIT_CARD": re.compile(
+        r'\b\d(?:[-\s]?\d){11,18}\b'
+    ),
     "IP_ADDRESS": re.compile(r'\b(?:\d{1,3}\.){3}\d{1,3}\b'),
 }
 

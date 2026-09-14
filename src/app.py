@@ -60,6 +60,21 @@ if text_input:
     for m in matches:
         st.write(f"**{m.entity_type}** ({m.source}, confidence {m.confidence:.2f}): `{m.text}`")
 
+    with st.expander("View as API response (JSON)"):
+        st.json({
+            "entities": [
+                {
+                    "entity_type": m.entity_type,
+                    "text": m.text,
+                    "start": m.start,
+                    "end": m.end,
+                    "confidence": m.confidence,
+                    "source": m.source,
+                }
+                for m in matches
+            ]
+        })
+
     st.subheader("Redacted text")
     from redactor import redact
     st.write(redact(text_input, matches))

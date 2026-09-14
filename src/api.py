@@ -15,6 +15,10 @@ class TextRequest(BaseModel):
     text: str
 
 
+class BatchTextRequest(BaseModel):
+    texts: list[str]
+
+
 class EntityResponse(BaseModel):
     entity_type: str
     text: str
@@ -26,6 +30,10 @@ class EntityResponse(BaseModel):
 
 class DetectResponse(BaseModel):
     entities: list[EntityResponse]
+
+
+class BatchDetectResponse(BaseModel):
+    results: list[DetectResponse]
 
 
 class RedactResponse(BaseModel):
@@ -50,6 +58,29 @@ def detect_endpoint(request: TextRequest):
             for m in matches
         ]
     )
+
+
+@app.post("/detect-batch", response_model=BatchDetectResponse)
+def detect_batch_endpoint(request: BatchTextRequest):
+    results = []
+    for text in request.texts:
+        matches = detector.detect(text)
+        results.append(
+            DetectResponse(
+                entities=[
+                    EntityResponse(
+                        entity_type=m.entity_type,
+                        text=m.text,
+                        start=m.start,
+                        end=m.end,
+                        confidence=m.confidence,
+                        source=m.source,
+                    )
+                    for m in matches
+                ]
+            )
+        )
+    return BatchDetectResponse(results=results)
 
 
 @app.post("/redact", response_model=RedactResponse)
